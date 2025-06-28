@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
@@ -448,11 +449,12 @@ function WordPuzzle({ puzzle, userSolution, setUserSolution }: any) {
   );
 }
 
-function LogicGridPuzzle({ puzzle, userSolution, setUserSolution }: any) {
+function LogicGridPuzzle({ userSolution, setUserSolution }: any) {
   const [, drop] = useDrop(() => ({
     accept: 'piece',
     drop: (item: any, monitor) => {
-      const { x, y } = monitor.getDropResult() || {};
+      const dropResult = monitor.getDropResult() as { x?: number; y?: number } || {};
+      const { x, y } = dropResult;
       if (x !== undefined && y !== undefined) {
         const newGrid = [...userSolution];
         newGrid[x][y] = item.value;
@@ -461,27 +463,41 @@ function LogicGridPuzzle({ puzzle, userSolution, setUserSolution }: any) {
     }
   }));
 
+  // Use a callback ref to ensure type compatibility with React's ref system
+  const setDropRef = React.useCallback(
+    (node: HTMLDivElement | null) => {
+      if (node) {
+        drop(node);
+      }
+    },
+    [drop]
+  );
+
   return (
-    <div ref={drop} className="space-y-6">
+    <div ref={setDropRef} className="space-y-6">
       <div className="grid grid-cols-3 gap-2 max-w-xs mx-auto">
-        {userSolution.map((row: any[], rowIndex: number) =>
-          row.map((cell: any, colIndex: number) => (
-            <div
-              key={`${rowIndex}-${colIndex}`}
-              className="w-16 h-16 bg-white/10 border border-white/20 rounded-lg flex items-center justify-center"
-            >
-              {cell !== null && (
-                <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${
-                  cell === 0 ? 'from-red-500 to-red-600' :
-                  cell === 1 ? 'from-blue-500 to-blue-600' :
-                  'from-green-500 to-green-600'
-                }`} />
-              )}
-            </div>
-          ))
-        )}
+        {Array.isArray(userSolution) &&
+          userSolution.map((row: any[], rowIndex: number) =>
+            row.map((cell: any, colIndex: number) => (
+              <div
+                key={`${rowIndex}-${colIndex}`}
+                className="w-16 h-16 bg-white/10 border border-white/20 rounded-lg flex items-center justify-center"
+              >
+                {cell !== null && (
+                  <div
+                    className={`w-12 h-12 rounded-lg bg-gradient-to-br ${
+                      cell === 0
+                        ? 'from-red-500 to-red-600'
+                        : cell === 1
+                        ? 'from-blue-500 to-blue-600'
+                        : 'from-green-500 to-green-600'
+                    }`}
+                  />
+                )}
+              </div>
+            ))
+          )}
       </div>
-      
       <div className="flex justify-center space-x-4">
         {[0, 1, 2].map((value) => (
           <DraggablePuzzlePiece
