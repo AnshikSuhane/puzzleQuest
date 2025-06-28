@@ -12,6 +12,7 @@ interface User {
   currentStreak: number;
   longestStreak: number;
   achievements?: string[];
+  totalPuzzlesSolved: number;
 }
 
 interface AuthContextType {
@@ -25,7 +26,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://puzzlequest.onrender.com/api';
 
 // Set up axios defaults
 axios.defaults.baseURL = API_URL;

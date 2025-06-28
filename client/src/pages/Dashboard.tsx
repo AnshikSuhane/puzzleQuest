@@ -1,4 +1,6 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
@@ -11,11 +13,10 @@ import {
   Star,
   Target,
   Award,
-  Timer,
   Brain
 } from 'lucide-react';
 import axios from 'axios';
-import { format, isToday } from 'date-fns';
+import { format } from 'date-fns';
 
 interface DashboardStats {
   dailyPuzzleCompleted: boolean;
@@ -27,7 +28,7 @@ interface DashboardStats {
 }
 
 export default function Dashboard() {
-  const { user, updateUser } = useAuth();
+  const { user } = useAuth();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
 
