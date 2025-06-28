@@ -3,10 +3,10 @@ import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import { authenticateToken } from '../middleware/auth.js';
 
-const router = express.Router();
+export const Authrouter = express.Router();
 
 // Register
-router.post('/register', async (req, res) => {
+Authrouter.post('/register', async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
@@ -51,7 +51,7 @@ router.post('/register', async (req, res) => {
 });
 
 // Login
-router.post('/login', async (req, res) => {
+Authrouter.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -94,7 +94,7 @@ router.post('/login', async (req, res) => {
 });
 
 // Get current user
-router.get('/me', authenticateToken, async (req, res) => {
+Authrouter.get('/me', authenticateToken, async (req, res) => {
   try {
     const user = await User.findById(req.userId).select('-password');
     res.json(user);
@@ -102,5 +102,3 @@ router.get('/me', authenticateToken, async (req, res) => {
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
-
-export default router;

@@ -5,10 +5,10 @@ import User from '../models/User.js';
 import { authenticateToken } from '../middleware/auth.js';
 import { generateDailyPuzzle } from '../utils/puzzleGenerator.js';
 
-const router = express.Router();
+export const Puzzlerouter = express.Router();
 
 // Get daily puzzle
-router.get('/daily', authenticateToken, async (req, res) => {
+Puzzlerouter.get('/daily', authenticateToken, async (req, res) => {
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -42,7 +42,7 @@ router.get('/daily', authenticateToken, async (req, res) => {
 });
 
 // Submit puzzle solution
-router.post('/:puzzleId/submit', authenticateToken, async (req, res) => {
+Puzzlerouter.post('/:puzzleId/submit', authenticateToken, async (req, res) => {
   try {
     const { puzzleId } = req.params;
     const { solution, timeSpent } = req.body;
@@ -119,7 +119,7 @@ router.post('/:puzzleId/submit', authenticateToken, async (req, res) => {
 });
 
 // Get user's puzzle history
-router.get('/history', authenticateToken, async (req, res) => {
+Puzzlerouter.get('/history', authenticateToken, async (req, res) => {
   try {
     const progress = await UserProgress.find({ userId: req.userId })
       .populate('puzzleId')
@@ -155,5 +155,3 @@ function isYesterday(date, today) {
   yesterday.setDate(yesterday.getDate() - 1);
   return date.toDateString() === yesterday.toDateString();
 }
-
-export default router;
