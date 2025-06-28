@@ -23,13 +23,16 @@ const limiter = rateLimit({
 app.use(helmet());
 app.use(limiter);
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  origin: process.env.CLIENT_URL || ' https://puzzlequest.onrender.com',
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
+app.get('/',(req,res)=>{
+  res.json({message:"sucessfull"})
+})
 app.use('/api/auth', authRoutes);
 app.use('/api/puzzles', puzzleRoutes);
 app.use('/api/users', userRoutes);
